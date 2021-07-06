@@ -1,0 +1,20 @@
+﻿@using SignalRChat.Helpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SignalRChat</title>
+    @Html.PreloadResources()
+    @Html.RenderVueCssFiles()
+</head>
+<body>
+    <div id="app">
+        @RenderBody()
+    </div>
+
+    @Html.RenderVueJsFiles()
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
