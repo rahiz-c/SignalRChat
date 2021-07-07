@@ -26,9 +26,12 @@ namespace SignalRChat
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            //services.AddControllersWithViews();
             services.AddJwtAuthentication();
             services.AddSignalR();
+            services.AddMvc(options =>{
+                options.EnableEndpointRouting = false;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -49,14 +52,27 @@ namespace SignalRChat
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseSignalR(options =>
             {
-                endpoints.MapHub<ChatHub>("/chatHub");
-                endpoints.MapControllerRoute(
-                                        name: "default",
-                                        pattern: "{controller=Home}/{action=Index}/{id?}");
+                options.MapHub<ChatHub>("/chatHub");
             });
 
+            if (env.IsDevelopment())
+            {
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute("all", "api/{*url}", new { controller = "Home", action = "Index" });
+                });
+            }
+
+            else
+            {
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute("all", "{*url}", new { controller = "Home", action = "Index" });
+                });
+
+            }
             if (env.IsDevelopment())
             {
                 app.UseEndpoints(endpoints =>
@@ -68,15 +84,7 @@ namespace SignalRChat
                        );
                 });
             }
-            //else
-            //{
-            //    app.UseEndpoints(endpoints =>
-            //    {
-            //        endpoints.MapControllerRoute(
-            //            name: "default",
-            //            pattern: "{controller=Home}/{action=Index}/{id?}");
-            //    });
-            //}
+            
 
         }
     }
