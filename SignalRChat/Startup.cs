@@ -26,12 +26,9 @@ namespace SignalRChat
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddControllersWithViews();
+            services.AddControllersWithViews();
             services.AddJwtAuthentication();
             services.AddSignalR();
-            services.AddMvc(options =>{
-                options.EnableEndpointRouting = false;
-            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -57,22 +54,10 @@ namespace SignalRChat
                 options.MapHub<ChatHub>("/chatHub");
             });
 
-            if (env.IsDevelopment())
+            app.UseEndpoints(endpoints =>
             {
-                app.UseMvc(routes =>
-                {
-                    routes.MapRoute("all", "api/{*url}", new { controller = "Home", action = "Index" });
-                });
-            }
-
-            else
-            {
-                app.UseMvc(routes =>
-                {
-                    routes.MapRoute("all", "{*url}", new { controller = "Home", action = "Index" });
-                });
-
-            }
+                endpoints.MapDefaultControllerRoute();
+            });
             if (env.IsDevelopment())
             {
                 app.UseEndpoints(endpoints =>
