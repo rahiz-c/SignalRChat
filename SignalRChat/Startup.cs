@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.SpaServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SignalRChat.Helpers;
 using SignalRChat.Hubs;
-using SignalRChat.Initialization;
+using SignalRChat.Services;
 using VueCliMiddleware;
 
 namespace SignalRChat
@@ -27,8 +28,10 @@ namespace SignalRChat
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddJwtAuthentication();
             services.AddSignalR();
+
+            services.AddSingleton(Configuration.Get<AppSettings>());
+            services.AddScoped<UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,9 +48,13 @@ namespace SignalRChat
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
+           // app.UseAuthentication();
 
-            app.UseAuthorization();
+            app.UseRouting();
+            app.UseMiddleware<JwtMiddleware>();
+
+            // app.UseAuthorization();
+
 
             app.UseSignalR(options =>
             {
