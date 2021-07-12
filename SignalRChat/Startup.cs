@@ -39,6 +39,7 @@ namespace SignalRChat
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
             }
             else
             {
@@ -48,13 +49,9 @@ namespace SignalRChat
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-           // app.UseAuthentication();
-
             app.UseRouting();
-            app.UseMiddleware<JwtMiddleware>();
-
-            // app.UseAuthorization();
-
+           
+            app.UseMiddleware(typeof(JwtMiddleware));
 
             app.UseSignalR(options =>
             {
@@ -65,6 +62,7 @@ namespace SignalRChat
             {
                 endpoints.MapDefaultControllerRoute();
             });
+
             if (env.IsDevelopment())
             {
                 app.UseEndpoints(endpoints =>
@@ -76,7 +74,7 @@ namespace SignalRChat
                        );
                 });
             }
-            
+
 
         }
     }
